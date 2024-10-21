@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${version}",
+  "name": "Kneelawk's Registry Mod",
+  "description": "Registry code I'm tired of replicating in other mods.",
+  "authors": [
+    "Kneelawk"
+  ],
+  "contact": {
+    "homepage": "https://github.com/Kneelawk/KRegistry",
+    "issues": "https://github.com/Kneelawk/KRegistry/issues",
+    "sources": "https://github.com/Kneelawk/KRegistry"
+  },
+  "license": "MIT",
+  "icon": "assets/${mod_id}/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      {
+        "value": "com.kneelawk.kregistry.core.fabric.impl.FabricMod"
+      }
+    ]
+  },
+  "mixins": [ ],
+  "depends": {
+    "fabricloader": ">=0.15.0",
+    "fabric-api": "*",
+    "minecraft": ">=1.21- <1.22-",
+    "java": ">=17",
+    "common_events": ">=1"
+  }
+}
