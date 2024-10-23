@@ -90,6 +90,9 @@ public interface LiteRegistry<T> extends Keyable {
 
     /**
      * Creates a new simple registry.
+     * <p>
+     * Simple registries have synchronized registration via {@link #register(ResourceLocation, Object)}, meaning
+     * that they are thread-safe as long as none of the read methods are called while registration is occurring.
      *
      * @param name the name of the new registry.
      * @param <T>  the type of value the new registry holds.
