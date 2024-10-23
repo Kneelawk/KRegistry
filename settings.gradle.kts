@@ -84,3 +84,8 @@ module(xplat, "core-xplat")
 module(mojmap, "core-xplat-mojmap")
 module(fabric, "core-fabric")
 module(neoforge, "core-neoforge")
+
+module(xplat, "lite-xplat")
+module(mojmap, "lite-xplat-mojmap")
+module(fabric, "lite-fabric")
+module(neoforge, "lite-neoforge")

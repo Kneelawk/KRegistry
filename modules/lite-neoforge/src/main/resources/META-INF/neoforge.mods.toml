@@ -5,21 +5,14 @@ license = "MIT"
 [[mods]]
 modId = "${mod_id}"
 version = "${version}"
-displayName = "KRegistry Core"
+displayName = "KRegistry Lite"
 authors = "Kneelawk"
-description = "Registry code I'm tired of replicating in other mods."
+description = "Lightweight Registry alternatives."
 logoFile = "assets/${mod_id}/icon.png"
 
 [[dependencies.${mod_id}]]
 modId = "neoforge"
 type = "REQUIRED"
 versionRange = "[21.0,)"
-ordering = "NONE"
-side = "BOTH"
-
-[[dependencies.${mod_id}]]
-modId = "common_events"
-type = "REQUIRED"
-versionRange = "[1,)"
 ordering = "NONE"
 side = "BOTH"
