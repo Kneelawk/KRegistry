@@ -11,6 +11,11 @@ import net.minecraft.resources.ResourceKey;
 
 /**
  * Holds a lazily-initialized value and its associated resource key.
+ * <p>
+ * Unlike {@code DeferredHolder}s, these <em>will</em> initialize early if {@link #get()} is called early.
+ * <p>
+ * Note: {@link #get()} is called by {@link KRegistrar}s when registering their contents, so there is no need to
+ * manually make sure each holder has been lazily initialized.
  *
  * @param <T> the type this holder holds.
  */
