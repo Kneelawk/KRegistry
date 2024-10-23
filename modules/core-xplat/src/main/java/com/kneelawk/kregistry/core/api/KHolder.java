@@ -65,7 +65,7 @@ public class KHolder<T> implements Supplier<T> {
     }
 
     /**
-     * {@return the registry for the registry key associated with the value in this holder, if the registry key references a valid key}
+     * {@return the registry for the registry key associated with the value in this holder, if the resource key references a valid registry}
      */
     @SuppressWarnings("unchecked")
     public @Nullable Registry<T> getRegistry() {
