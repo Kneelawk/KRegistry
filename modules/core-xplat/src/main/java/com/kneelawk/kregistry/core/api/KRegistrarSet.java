@@ -1,9 +1,11 @@
 package com.kneelawk.kregistry.core.api;
 
 import java.util.Map;
+import java.util.Optional;
 
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceLinkedOpenHashMap;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
@@ -60,14 +62,14 @@ public class KRegistrarSet {
     @SuppressWarnings("unchecked")
     public void registerAll() {
         for (var entry : registrars.entrySet()) {
-            Registry<Object> registry = ((Registry<Registry<Object>>) BuiltInRegistries.REGISTRY).get(
+            Optional<Holder.Reference<Registry<Object>>> registry = ((Registry<Registry<Object>>) BuiltInRegistries.REGISTRY).get(
                 (ResourceKey<Registry<Object>>) entry.getKey());
-            if (registry == null) {
+            if (registry.isEmpty()) {
                 KRLog.LOG.error("Attempted to register items for {} but there is no registry with that key",
                     entry.getKey());
                 continue;
             }
-            entry.getValue().registerAll(registry);
+            entry.getValue().registerAll(registry.get().value());
         }
     }
 }

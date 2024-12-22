@@ -23,7 +23,7 @@ public class KHolder<T> implements Supplier<T> {
     private final ResourceKey<T> key;
     private final Supplier<T> supplier;
     private @Nullable T value = null;
-    private @Nullable Holder<T> holder = null;
+    private @Nullable Holder.Reference<T> holder = null;
 
     /**
      * Creates a new lazily initialized holder.
@@ -69,19 +69,19 @@ public class KHolder<T> implements Supplier<T> {
      */
     @SuppressWarnings("unchecked")
     public @Nullable Registry<T> getRegistry() {
-        return (Registry<T>) BuiltInRegistries.REGISTRY.get(key.registry());
+        return (Registry<T>) BuiltInRegistries.REGISTRY.get(key.registry()).map(Holder.Reference::value).orElse(null);
     }
 
     /**
      * {@return the vanilla holder for the value in this holder, if it has been registered}
      */
-    public @Nullable Holder<T> getHolder() {
-        Holder<T> holder = this.holder;
+    public @Nullable Holder.Reference<T> getHolder() {
+        Holder.Reference<T> holder = this.holder;
         if (holder == null) {
             Registry<T> registry = getRegistry();
             if (registry == null) return null;
 
-            this.holder = holder = registry.getHolder(key).orElse(null);
+            this.holder = holder = registry.get(key).orElse(null);
         }
         return holder;
     }
