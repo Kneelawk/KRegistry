@@ -37,8 +37,8 @@ rootProject.name = "kregistry"
 
 fun module(enabled: Boolean, name: String) {
     if (!enabled) return
-        include(name)
-        project(":$name").projectDir = File(rootDir, "modules/${name.replace(':', '/')}")
+    include(name)
+    project(":$name").projectDir = File(rootDir, "modules/${name.replace(':', '/')}")
 }
 
 fun module(name: String, vararg submodules: Pair<Boolean, String>) {
@@ -47,15 +47,15 @@ fun module(name: String, vararg submodules: Pair<Boolean, String>) {
 
     for ((enabled, submodule) in submodules) {
         if (!enabled) continue
-            include("$name:$submodule")
-            project(":$name:$submodule").projectDir = File(rootDir, "modules/$name/${submodule.replace(':', '/')}")
+        include("$name:$submodule")
+        project(":$name:$submodule").projectDir = File(rootDir, "modules/$name/${submodule.replace(':', '/')}")
     }
 }
 
 fun example(enabled: Boolean, name: String) {
     if (!enabled) return
-        include(name)
-        project(":$name").projectDir = File(rootDir, "examples/${name.replace(':', '/')}")
+    include(name)
+    project(":$name").projectDir = File(rootDir, "examples/${name.replace(':', '/')}")
 }
 
 fun example(name: String, vararg submodules: Pair<Boolean, String>) {
@@ -64,15 +64,15 @@ fun example(name: String, vararg submodules: Pair<Boolean, String>) {
 
     for ((enabled, submodule) in submodules) {
         if (!enabled) continue
-            include("$name:$submodule")
-            project(":$name:$submodule").projectDir = File(rootDir, "examples/$name/${submodule.replace(':', '/')}")
+        include("$name:$submodule")
+        project(":$name:$submodule").projectDir = File(rootDir, "examples/$name/${submodule.replace(':', '/')}")
     }
 }
 
 fun javadoc(enabled: Boolean, name: String) {
     if (!enabled) return
-        include("javadoc-$name")
-        project(":javadoc-$name").projectDir = File(rootDir, "javadoc/$name")
+    include("javadoc-$name")
+    project(":javadoc-$name").projectDir = File(rootDir, "javadoc/$name")
 }
 
 val xplat = true
@@ -89,3 +89,7 @@ module(xplat, "lite-xplat")
 module(mojmap, "lite-xplat-mojmap")
 module(fabric, "lite-fabric")
 module(neoforge, "lite-neoforge")
+
+example(xplat, "simple-example-xplat")
+example(fabric, "simple-example-fabric")
+example(neoforge, "simple-example-neoforge")

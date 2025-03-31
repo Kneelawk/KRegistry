@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "kregistry_simple_example:block/kathos_bricks"
+  }
+}
