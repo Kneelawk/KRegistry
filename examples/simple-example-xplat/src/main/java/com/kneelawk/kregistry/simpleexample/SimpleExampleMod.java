@@ -11,11 +11,11 @@ public class SimpleExampleMod {
     public static final KRegistrarSet SET = new KRegistrarSet(SimpleExampleConstants.MOD_ID);
 
     public static void init() {
+        SEBlocks.register();
     }
 
     @Listen(RegisterCallback.class)
     public static void register(RegisterCallback.Context ctx) {
-        SEBlocks.register();
         ctx.register(SET);
     }
 }

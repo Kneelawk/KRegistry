@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.kneelawk.kregistry.core.fabric.impl.mixin.impl",
+  "compatibilityLevel": "JAVA_21",
+  "refmap": "${refmap}",
+  "mixins": [
+    "Mixin_BuiltInRegistries",
+    "Mixin_MappedRegistry"
+  ],
+  "client": [ ],
+  "server": [ ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
