@@ -44,11 +44,11 @@ public class KRegistrar<T> {
     }
 
     /**
-     * Registers all values that have been registered to this registrar to the given vanilla registry.
+     * Applies all values that have been registered to this registrar to the given vanilla registry.
      *
      * @param registry the registry to register all this registrar's values to.
      */
-    public void registerAll(Registry<? super T> registry) {
+    public void apply(Registry<? super T> registry) {
         if (key != registry.key()) return;
 
         for (var entry : stuff.entrySet()) {

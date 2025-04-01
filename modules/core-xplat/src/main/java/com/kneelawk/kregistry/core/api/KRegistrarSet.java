@@ -40,27 +40,27 @@ public class KRegistrarSet {
     }
 
     /**
-     * Registers all collected values for the given registry.
+     * Applies all collected values for the given registry.
      * <p>
      * This should generally be called on a NeoForge backend.
      *
      * @param registry the registry to register values to.
      */
     @SuppressWarnings("unchecked")
-    public void register(Registry<?> registry) {
+    public void apply(Registry<?> registry) {
         KRegistrar<?> registrar = registrars.get(registry.key());
         if (registrar == null) return;
 
-        registrar.registerAll((Registry<? super Object>) registry);
+        registrar.apply((Registry<? super Object>) registry);
     }
 
     /**
-     * Registers all collected values to their associated registries.
+     * Applies all collected values to their associated registries.
      * <p>
-     * This should generally be called on a fabric backend.
+     * This should generally be called on a Fabric backend.
      */
     @SuppressWarnings("unchecked")
-    public void registerAll() {
+    public void apply() {
         for (var entry : registrars.entrySet()) {
             Optional<Holder.Reference<Registry<Object>>> registry = ((Registry<Registry<Object>>) BuiltInRegistries.REGISTRY).get(
                 (ResourceKey<Registry<Object>>) entry.getKey());
@@ -69,7 +69,7 @@ public class KRegistrarSet {
                     entry.getKey());
                 continue;
             }
-            entry.getValue().registerAll(registry.get().value());
+            entry.getValue().apply(registry.get().value());
         }
     }
 }

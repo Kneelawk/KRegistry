@@ -14,7 +14,7 @@ public class FabricMod implements ModInitializer {
         RegisterCallback.EVENT.invoker().register(sets::add);
 
         for (KRegistrarSet set : sets) {
-            set.registerAll();
+            set.apply();
         }
     }
 }

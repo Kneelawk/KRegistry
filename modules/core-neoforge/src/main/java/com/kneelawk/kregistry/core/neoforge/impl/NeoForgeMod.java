@@ -2,7 +2,6 @@ package com.kneelawk.kregistry.core.neoforge.impl;
 
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -32,7 +31,7 @@ public class NeoForgeMod {
         ensureInitialized();
 
         for (KRegistrarSet set : sets) {
-            set.register(event.getRegistry());
+            set.apply(event.getRegistry());
         }
     }
 }

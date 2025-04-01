@@ -7,8 +7,8 @@
  * {@link com.kneelawk.kregistry.core.api.KRegistrar#register(java.lang.String, java.util.function.Supplier)} to create
  * {@link com.kneelawk.kregistry.core.api.KHolder}s.
  * <p>
- * Finally, call {@link com.kneelawk.kregistry.core.api.KRegistrarSet#registerAll()} in your Fabric-side common
- * initializer and {@link com.kneelawk.kregistry.core.api.KRegistrarSet#register(net.minecraft.core.Registry)} in your
+ * Finally, call {@link com.kneelawk.kregistry.core.api.KRegistrarSet#apply()} in your Fabric-side common
+ * initializer and {@link com.kneelawk.kregistry.core.api.KRegistrarSet#apply(net.minecraft.core.Registry)} in your
  * NeoForge-side {@code RegisterEvent}, or just use {@link com.kneelawk.kregistry.core.api.RegisterCallback} to avoid
  * platform-specific registration boilerplate.
  */
