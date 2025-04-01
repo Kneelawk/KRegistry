@@ -1,6 +1,8 @@
 package com.kneelawk.kregistry.core.api;
 
 import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import it.unimi.dsi.fastutil.objects.Object2ReferenceLinkedOpenHashMap;
@@ -32,15 +34,47 @@ public class KRegistrar<T> {
      * @param <T2> the type being registered.
      * @return the custom holder for the value.
      */
-    @SuppressWarnings("unchecked")
     public <T2 extends T> KHolder<T2> register(String path, Supplier<T2> ctor) {
+        return register(path, key -> ctor.get());
+    }
+
+    /**
+     * Registers a lazily initializable value with its resource key.
+     *
+     * @param path the path to register the value under.
+     * @param ctor the creator for the value.
+     * @param <T2> the type being registered.
+     * @return the custom holder for the value.
+     */
+    @SuppressWarnings("unchecked")
+    public <T2 extends T> KHolder<T2> register(String path, Function<ResourceKey<T>, T2> ctor) {
         ResourceLocation name = ResourceLocation.fromNamespaceAndPath(modId, path);
         if (stuff.containsKey(name)) throw new IllegalArgumentException("Tried to register " + name + " twice!");
 
-        KHolder<T2> holder = new KHolder<>(ResourceKey.create((ResourceKey<? extends Registry<T2>>) key, name), ctor);
+        ResourceKey<T> resourceKey = ResourceKey.create((ResourceKey<? extends Registry<T>>) key, name);
+        KHolder<T2> holder = new KHolder<>((ResourceKey<T2>) resourceKey, () -> ctor.apply(resourceKey));
         stuff.put(name, holder);
 
         return holder;
+    }
+
+    /**
+     * Registers a lazily initializable value with settings that need to have an id applied to them.
+     *
+     * @param path          the path to register the value under.
+     * @param ctor          the final object's constructor.
+     * @param idSetter      the function to set the id on the input settings.
+     * @param inputSettings the settings passed to the final object's constructor.
+     * @param <T2>          the type being registered.
+     * @param <S>           the type of settings.
+     * @return the custom holder for the value.
+     */
+    public <T2 extends T, S> KHolder<T2> register(String path, Function<S, T2> ctor,
+                                                  BiConsumer<S, ResourceKey<T>> idSetter, S inputSettings) {
+        return register(path, key -> {
+            idSetter.accept(inputSettings, key);
+            return ctor.apply(inputSettings);
+        });
     }
 
     /**
