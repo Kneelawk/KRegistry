@@ -2,11 +2,11 @@ package com.kneelawk.kregistry.core.api;
 
 import java.util.function.Supplier;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 
 /**
@@ -14,75 +14,49 @@ import net.minecraft.resources.ResourceKey;
  * <p>
  * Unlike {@code DeferredHolder}s, these <em>will</em> initialize early if {@link #get()} is called early.
  * <p>
- * Note: {@link #get()} is called by {@link KRegistrar}s when registering their contents, so there is no need to
+ * Note: {@link #get()} is called by {@link KCoreRegistrar}s when registering their contents, so there is no need to
  * manually make sure each holder has been lazily initialized.
  *
  * @param <T> the type this holder holds.
  */
-public class KHolder<T> implements Supplier<T> {
-    private final ResourceKey<T> key;
-    private final Supplier<T> supplier;
-    private @Nullable T value = null;
-    private @Nullable Holder.Reference<T> holder = null;
-
-    /**
-     * Creates a new lazily initialized holder.
-     *
-     * @param key      the key associated with the value.
-     * @param supplier the value supplier.
-     */
-    KHolder(ResourceKey<T> key, Supplier<T> supplier) {
-        this.key = key;
-        this.supplier = supplier;
-    }
-
+public interface KHolder<T> extends Supplier<T> {
     /**
      * Gets and initializes the value in this holder.
      *
      * @return the value in this holder.
      */
     @Override
-    public T get() {
-        T value = this.value;
-        if (value == null) {
-            this.value = value = supplier.get();
-        }
-        return value;
-    }
+    T get();
 
     /**
      * {@return whether the value in this holder has been lazily initialized yet}
      */
-    public boolean isInitialized() {
-        return value != null;
-    }
+    boolean isInitialized();
 
     /**
      * {@return the key associated with the value in this holder}
      */
-    public ResourceKey<T> getKey() {
-        return key;
-    }
+    ResourceKey<T> getKey();
 
     /**
      * {@return the registry for the registry key associated with the value in this holder, if the resource key references a valid registry}
      */
     @SuppressWarnings("unchecked")
-    public @Nullable Registry<T> getRegistry() {
-        return (Registry<T>) BuiltInRegistries.REGISTRY.get(key.registry()).map(Holder.Reference::value).orElse(null);
-    }
+    @Nullable Registry<T> getRegistry();
 
     /**
-     * {@return the vanilla holder for the value in this holder, if it has been registered}
+     * {@return the vanilla holder for the value in this holder, if it has been registered, or null if it has not}
      */
-    public @Nullable Holder.Reference<T> getHolder() {
-        Holder.Reference<T> holder = this.holder;
-        if (holder == null) {
-            Registry<T> registry = getRegistry();
-            if (registry == null) return null;
+    @Nullable Holder.Reference<T> getHolder();
 
-            this.holder = holder = registry.get(key).orElse(null);
+    /**
+     * {@return the vanilla holder for the value in this holder, if it has been registered, or throws if it has not}
+     */
+    default @NotNull Holder.Reference<T> getHolderOrThrow() {
+        Holder.Reference<T> ref = getHolder();
+        if (ref == null) {
+            throw new IllegalStateException("Holder " + getKey() + " has not been registered!");
         }
-        return holder;
+        return ref;
     }
 }

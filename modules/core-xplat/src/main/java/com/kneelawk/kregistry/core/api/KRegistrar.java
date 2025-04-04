@@ -1,31 +1,17 @@
 package com.kneelawk.kregistry.core.api;
 
-import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import it.unimi.dsi.fastutil.objects.Object2ReferenceLinkedOpenHashMap;
-
-import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 
 /**
  * Collects values to be registered in a cross-platform easy-to-use way.
  *
  * @param <T> the type this registrar holds.
  */
-public class KRegistrar<T> {
-    private final String modId;
-    private final ResourceKey<Registry<T>> key;
-    private final Map<ResourceLocation, KHolder<? extends T>> stuff = new Object2ReferenceLinkedOpenHashMap<>();
-
-    KRegistrar(String modId, ResourceKey<Registry<T>> key) {
-        this.modId = modId;
-        this.key = key;
-    }
-
+public interface KRegistrar<T> {
     /**
      * Registers a lazily initializable value.
      *
@@ -34,7 +20,7 @@ public class KRegistrar<T> {
      * @param <T2> the type being registered.
      * @return the custom holder for the value.
      */
-    public <T2 extends T> KHolder<T2> register(String path, Supplier<T2> ctor) {
+    default <T2 extends T> KHolder<T2> register(String path, Supplier<T2> ctor) {
         return register(path, key -> ctor.get());
     }
 
@@ -47,46 +33,24 @@ public class KRegistrar<T> {
      * @return the custom holder for the value.
      */
     @SuppressWarnings("unchecked")
-    public <T2 extends T> KHolder<T2> register(String path, Function<ResourceKey<T>, T2> ctor) {
-        ResourceLocation name = ResourceLocation.fromNamespaceAndPath(modId, path);
-        if (stuff.containsKey(name)) throw new IllegalArgumentException("Tried to register " + name + " twice!");
-
-        ResourceKey<T> resourceKey = ResourceKey.create(key, name);
-        KHolder<T2> holder = new KHolder<>((ResourceKey<T2>) resourceKey, () -> ctor.apply(resourceKey));
-        stuff.put(name, holder);
-
-        return holder;
-    }
+    <T2 extends T> KHolder<T2> register(String path, Function<ResourceKey<T>, T2> ctor);
 
     /**
-     * Registers a lazily initializable value with settings that need to have an id applied to them.
+     * Registers a lazily initializable value with properties that need to have an id applied to them.
      *
-     * @param path          the path to register the value under.
-     * @param ctor          the final object's constructor.
-     * @param idSetter      the function to set the id on the input settings.
-     * @param inputSettings the settings passed to the final object's constructor.
-     * @param <T2>          the type being registered.
-     * @param <S>           the type of settings.
+     * @param path            the path to register the value under.
+     * @param ctor            the final object's constructor.
+     * @param idSetter        the function to set the id on the input properties.
+     * @param inputProperties the properties passed to the final object's constructor.
+     * @param <T2>            the type being registered.
+     * @param <P>             the type of properties.
      * @return the custom holder for the value.
      */
-    public <T2 extends T, S> KHolder<T2> register(String path, Function<S, T2> ctor,
-                                                  BiConsumer<S, ResourceKey<T>> idSetter, S inputSettings) {
+    default <T2 extends T, P> KHolder<T2> register(String path, Function<P, T2> ctor,
+                                                   BiConsumer<P, ResourceKey<T>> idSetter, P inputProperties) {
         return register(path, key -> {
-            idSetter.accept(inputSettings, key);
-            return ctor.apply(inputSettings);
+            idSetter.accept(inputProperties, key);
+            return ctor.apply(inputProperties);
         });
-    }
-
-    /**
-     * Applies all values that have been registered to this registrar to the given vanilla registry.
-     *
-     * @param registry the registry to register all this registrar's values to.
-     */
-    public void apply(Registry<? super T> registry) {
-        if (key != registry.key()) return;
-
-        for (var entry : stuff.entrySet()) {
-            Registry.register(registry, entry.getKey(), entry.getValue().get());
-        }
     }
 }

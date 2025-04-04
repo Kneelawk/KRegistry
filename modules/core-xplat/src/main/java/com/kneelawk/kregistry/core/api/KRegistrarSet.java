@@ -8,15 +8,18 @@ import it.unimi.dsi.fastutil.objects.Reference2ReferenceLinkedOpenHashMap;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 
+import com.kneelawk.kregistry.core.api.specialization.KBlockRegistrar;
+import com.kneelawk.kregistry.core.api.specialization.KItemRegistrar;
 import com.kneelawk.kregistry.core.impl.KRLog;
 
 /**
  * Collects registrars that then collect values to register.
  */
 public class KRegistrarSet {
-    private final Map<ResourceKey<? extends Registry<?>>, KRegistrar<?>> registrars =
+    private final Map<ResourceKey<? extends Registry<?>>, KCoreRegistrar<?>> registrars =
         new Reference2ReferenceLinkedOpenHashMap<>();
     private final String modId;
 
@@ -34,9 +37,39 @@ public class KRegistrarSet {
      * @param <T> the type the registrar holds.
      * @return the registrar for the given registry.
      */
-    @SuppressWarnings("unchecked")
     public <T> KRegistrar<T> get(ResourceKey<Registry<T>> key) {
-        return (KRegistrar<T>) registrars.computeIfAbsent(key, k -> new KRegistrar<>(modId, (ResourceKey<Registry<T>>) k));
+        return getCore(key);
+    }
+
+    /**
+     * Gets or creates the core registrar for the given registry.
+     *
+     * @param key the key of the registry to get the registrar for.
+     * @param <T> the type the registrar holds.
+     * @return the core registrar for the given registry.
+     */
+    @SuppressWarnings("unchecked")
+    public <T> KCoreRegistrar<T> getCore(ResourceKey<Registry<T>> key) {
+        return (KCoreRegistrar<T>) registrars.computeIfAbsent(key,
+            k -> new KCoreRegistrar<>(modId, (ResourceKey<Registry<T>>) k));
+    }
+
+    /**
+     * Gets or creates an item registrar.
+     *
+     * @return the item registrar.
+     */
+    public KItemRegistrar getItem() {
+        return new KItemRegistrar(getCore(Registries.ITEM));
+    }
+
+    /**
+     * Gets or creates a block registrar.
+     *
+     * @return the block registrar.
+     */
+    public KBlockRegistrar getBlock() {
+        return new KBlockRegistrar(getCore(Registries.BLOCK), getItem());
     }
 
     /**
@@ -48,7 +81,7 @@ public class KRegistrarSet {
      */
     @SuppressWarnings("unchecked")
     public void apply(Registry<?> registry) {
-        KRegistrar<?> registrar = registrars.get(registry.key());
+        KCoreRegistrar<?> registrar = registrars.get(registry.key());
         if (registrar == null) return;
 
         registrar.apply((Registry<? super Object>) registry);
@@ -62,8 +95,9 @@ public class KRegistrarSet {
     @SuppressWarnings("unchecked")
     public void apply() {
         for (var entry : registrars.entrySet()) {
-            Optional<Holder.Reference<Registry<Object>>> registry = ((Registry<Registry<Object>>) BuiltInRegistries.REGISTRY).get(
-                (ResourceKey<Registry<Object>>) entry.getKey());
+            Optional<Holder.Reference<Registry<Object>>> registry =
+                ((Registry<Registry<Object>>) BuiltInRegistries.REGISTRY).get(
+                    (ResourceKey<Registry<Object>>) entry.getKey());
             if (registry.isEmpty()) {
                 KRLog.LOG.error("Attempted to register items for {} but there is no registry with that key",
                     entry.getKey());

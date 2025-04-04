@@ -7,7 +7,7 @@ import com.kneelawk.kregistry.core.impl.KRLog;
  * Optional callback called right before registrar sets are queried and their contents registered.
  * <p>
  * This acts both as a way to provide {@link KRegistrarSet}s to a central platform-specific registration mechanism,
- * and as a great place to initialize the classes that actually hold {@link KHolder}s of the objects to be registered.
+ * and as a great place to initialize the classes that actually hold {@link KHolderBase}s of the objects to be registered.
  * <p>
  * Note: On some platforms, this may be invoked shortly before some mods common initializers and shortly after others.
  */

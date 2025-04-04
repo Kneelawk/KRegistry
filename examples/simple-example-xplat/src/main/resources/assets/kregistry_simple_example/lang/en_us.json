@@ -1,3 +1,5 @@
 {
-  "item.kregistry_simple_example.kathos_bricks": "Kathos Bricks"
+  "block.kregistry_simple_example.kathos_bricks": "Kathos Bricks",
+  
+  "itemGroup.kregistry_simple_example.main": "KRegistry Simple Example"
 }
