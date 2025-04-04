@@ -18,10 +18,10 @@ import net.minecraft.resources.ResourceLocation;
  */
 public class KRegistrar<T> {
     private final String modId;
-    private final ResourceKey<? extends Registry<? extends T>> key;
+    private final ResourceKey<Registry<T>> key;
     private final Map<ResourceLocation, KHolder<? extends T>> stuff = new Object2ReferenceLinkedOpenHashMap<>();
 
-    KRegistrar(String modId, ResourceKey<? extends Registry<? extends T>> key) {
+    KRegistrar(String modId, ResourceKey<Registry<T>> key) {
         this.modId = modId;
         this.key = key;
     }
@@ -51,7 +51,7 @@ public class KRegistrar<T> {
         ResourceLocation name = ResourceLocation.fromNamespaceAndPath(modId, path);
         if (stuff.containsKey(name)) throw new IllegalArgumentException("Tried to register " + name + " twice!");
 
-        ResourceKey<T> resourceKey = ResourceKey.create((ResourceKey<? extends Registry<T>>) key, name);
+        ResourceKey<T> resourceKey = ResourceKey.create(key, name);
         KHolder<T2> holder = new KHolder<>((ResourceKey<T2>) resourceKey, () -> ctor.apply(resourceKey));
         stuff.put(name, holder);
 

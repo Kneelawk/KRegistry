@@ -35,8 +35,8 @@ public class KRegistrarSet {
      * @return the registrar for the given registry.
      */
     @SuppressWarnings("unchecked")
-    public <T> KRegistrar<T> get(ResourceKey<? extends Registry<? super T>> key) {
-        return (KRegistrar<T>) registrars.computeIfAbsent(key, k -> new KRegistrar<>(modId, k));
+    public <T> KRegistrar<T> get(ResourceKey<Registry<T>> key) {
+        return (KRegistrar<T>) registrars.computeIfAbsent(key, k -> new KRegistrar<>(modId, (ResourceKey<Registry<T>>) k));
     }
 
     /**
